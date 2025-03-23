@@ -34,25 +34,38 @@ class _WebViewScreenState extends State<WebViewScreen> {
   }
 
   Future<void> _checkPermissions() async {
-    // 权限检查和请求
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.microphone,
-      Permission.storage,
-    ].request();
-
-    bool allGranted = true;
-    statuses.forEach((permission, status) {
-      if (!status.isGranted) {
-        allGranted = false;
+    try {
+      // 检查权限状态
+      Map<Permission, PermissionStatus> statuses = await [
+        Permission.microphone,
+        Permission.storage,
+      ].request();
+  
+      bool allGranted = true;
+      statuses.forEach((permission, status) {
+        if (!status.isGranted) {
+          allGranted = false;
+        }
+      });
+  
+      setState(() {
+        permissionsGranted = allGranted;
+      });
+  
+      if (!permissionsGranted) {
+        // 延迟显示权限对话框，避免应用启动时就弹出对话框
+        Future.delayed(const Duration(seconds: 1), () {
+          if (mounted) {
+            _showPermissionDialog();
+          }
+        });
       }
-    });
-
-    setState(() {
-      permissionsGranted = allGranted;
-    });
-
-    if (!permissionsGranted) {
-      _showPermissionDialog();
+    } catch (e) {
+      print('权限检查错误: $e');
+      // 即使权限检查失败，也允许应用继续运行
+      setState(() {
+        permissionsGranted = false;
+      });
     }
   }
 
@@ -234,10 +247,23 @@ class _WebViewScreenState extends State<WebViewScreen> {
               if (window.VoiceprintApp && navigator.mediaDevices) {
                 window.VoiceprintApp.postMessage('audioPermissionReady');
               }
+              
+              // 处理可能的错误
+              window.onerror = function(message, source, lineno, colno, error) {
+                console.log('捕获到错误:', message);
+                if (window.VoiceprintApp) {
+                  window.VoiceprintApp.postMessage('error:' + message);
+                }
+                return true;
+              };
             ''');
           },
           onWebResourceError: (WebResourceError error) {
             print('Web resource error: ${error.description}');
+            setState(() {
+              isLoading = false;
+              isOffline = true;
+            });
           },
           onNavigationRequest: (NavigationRequest request) async {
             if (request.url.startsWith('http://') || request.url.startsWith('https://')) {
@@ -251,8 +277,10 @@ class _WebViewScreenState extends State<WebViewScreen> {
             return NavigationDecision.navigate;
           },
         ),
-      )
-      ..loadFile('${webDirectory.path}/$initialPage');
+      );
+      
+    // 尝试直接加载HTML字符串
+    _loadIndexHtmlContent();
       
     // 添加JavaScript通道以处理网页与Flutter之间的通信
     controller.addJavaScriptChannel(
@@ -261,6 +289,21 @@ class _WebViewScreenState extends State<WebViewScreen> {
         _handleJsMessage(message.message);
       },
     );
+  }
+  
+  // 直接加载HTML内容
+  Future<void> _loadIndexHtmlContent() async {
+    try {
+      // 尝试从assets读取index.html
+      String indexHtml = await rootBundle.loadString('assets/web/index.html');
+      
+      // 加载HTML字符串
+      controller.loadHtmlString(indexHtml, baseUrl: 'file://${webDirectory.path}/');
+    } catch (e) {
+      print('加载HTML内容错误: $e');
+      // 如果失败，尝试加载文件
+      controller.loadFile('${webDirectory.path}/$initialPage');
+    }
   }
 
   void _handleJsMessage(String message) {

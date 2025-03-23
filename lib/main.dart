@@ -1,25 +1,35 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'screens/web_view_screen.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  
-  // 设置应用仅支持竖屏模式
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
-  
-  // 设置状态栏风格
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-    ),
+  // 添加全局错误处理
+  runZonedGuarded(
+    () {
+      WidgetsFlutterBinding.ensureInitialized();
+      
+      // 设置应用仅支持竖屏模式
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]).then((_) {
+        // 设置状态栏风格
+        SystemChrome.setSystemUIOverlayStyle(
+          const SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.light,
+          ),
+        );
+        runApp(const VoiceprintBusinessApp());
+      });
+    },
+    (error, stack) {
+      print('捕获到未处理的错误: $error');
+      print('堆栈跟踪: $stack');
+      // 这里可以添加错误上报逻辑
+    },
   );
-  
-  runApp(const VoiceprintBusinessApp());
 }
 
 class VoiceprintBusinessApp extends StatelessWidget {
