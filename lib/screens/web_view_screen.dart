@@ -121,17 +121,27 @@ class _WebViewScreenState extends State<WebViewScreen> {
       
       if (!await webDirectory.exists()) {
         await webDirectory.create(recursive: true);
-        await _copyAssets();
       }
       
+      // 确保在初始化控制器前复制所有资源
+      await _copyAssets();
       _initWebViewController();
     } catch (e) {
       print('Error setting up WebView: $e');
+      setState(() {
+        isLoading = false;
+        isOffline = false; // 不要将设置错误视为离线问题
+      });
     }
   }
 
   Future<void> _copyAssets() async {
     try {
+      // 确保目录存在
+      if (!await webDirectory.exists()) {
+        await webDirectory.create(recursive: true);
+      }
+      
       // 复制HTML文件
       await _copyFileFromAssets('assets/web/index.html', '${webDirectory.path}/index.html');
       await _copyFileFromAssets('assets/web/login.html', '${webDirectory.path}/login.html');
@@ -146,10 +156,10 @@ class _WebViewScreenState extends State<WebViewScreen> {
       final imgDir = Directory('${webDirectory.path}/img');
       final pagesDir = Directory('${webDirectory.path}/pages');
       
-      await cssDir.create();
-      await jsDir.create();
-      await imgDir.create();
-      await pagesDir.create();
+      if (!await cssDir.exists()) await cssDir.create();
+      if (!await jsDir.exists()) await jsDir.create();
+      if (!await imgDir.exists()) await imgDir.create();
+      if (!await pagesDir.exists()) await pagesDir.create();
       
       // 复制CSS文件
       final cssAssets = await _getAssetsList('assets/web/css');
@@ -178,8 +188,11 @@ class _WebViewScreenState extends State<WebViewScreen> {
         final fileName = file.split('/').last;
         await _copyFileFromAssets(file, '${pagesDir.path}/$fileName');
       }
+      
+      print('资源文件复制完成，目标目录: ${webDirectory.path}');
     } catch (e) {
       print('Error copying assets: $e');
+      // 即使资源复制失败，也尝试继续运行
     }
   }
 
@@ -229,12 +242,17 @@ class _WebViewScreenState extends State<WebViewScreen> {
           onPageStarted: (String url) {
             setState(() {
               isLoading = true;
+              // 页面开始加载时，不认为是离线状态
+              isOffline = false;
             });
+            print('WebView开始加载页面: $url');
           },
           onPageFinished: (String url) {
             setState(() {
               isLoading = false;
             });
+            print('WebView页面加载完成: $url');
+            
             // 注入JavaScript以允许录音
             controller.runJavaScript('''
               // 配置麦克风访问
@@ -256,14 +274,32 @@ class _WebViewScreenState extends State<WebViewScreen> {
                 }
                 return true;
               };
-            ''');
+            ''').catchError((error) {
+              print('注入JavaScript时出错: $error');
+            });
           },
           onWebResourceError: (WebResourceError error) {
-            print('Web resource error: ${error.description}');
-            setState(() {
-              isLoading = false;
-              isOffline = true;
-            });
+            print('Web resource error: ${error.description}, 错误代码: ${error.errorCode}, URL: ${error.url}');
+            
+            // 只有当错误类型与网络相关时才显示离线状态
+            bool isNetworkError = error.errorCode == -2 || // 网络错误
+                                 error.errorCode == -8 || // 连接超时 
+                                 error.errorCode == -7;   // 连接被拒绝
+                                 
+            if (isNetworkError) {
+              setState(() {
+                isLoading = false;
+                isOffline = true;
+              });
+            } else {
+              // 对于其他类型的错误，不显示离线状态
+              setState(() {
+                isLoading = false;
+              });
+              
+              // 尝试加载备用资源
+              _tryLoadBackupResource();
+            }
           },
           onNavigationRequest: (NavigationRequest request) async {
             if (request.url.startsWith('http://') || request.url.startsWith('https://')) {
@@ -279,9 +315,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
         ),
       );
       
-    // 尝试直接加载HTML字符串
-    _loadIndexHtmlContent();
-      
     // 添加JavaScript通道以处理网页与Flutter之间的通信
     controller.addJavaScriptChannel(
       'VoiceprintApp',
@@ -289,20 +322,84 @@ class _WebViewScreenState extends State<WebViewScreen> {
         _handleJsMessage(message.message);
       },
     );
+    
+    // 加载HTML内容 - 使用多种方式尝试加载
+    _loadContent();
   }
   
-  // 直接加载HTML内容
-  Future<void> _loadIndexHtmlContent() async {
+  // 尝试加载备用资源
+  void _tryLoadBackupResource() {
     try {
-      // 尝试从assets读取index.html
-      String indexHtml = await rootBundle.loadString('assets/web/index.html');
-      
-      // 加载HTML字符串
-      controller.loadHtmlString(indexHtml, baseUrl: 'file://${webDirectory.path}/');
+      // 尝试直接加载文件
+      final filePath = '${webDirectory.path}/$initialPage';
+      print('尝试加载备用资源: $filePath');
+      controller.loadFile(filePath);
     } catch (e) {
-      print('加载HTML内容错误: $e');
-      // 如果失败，尝试加载文件
-      controller.loadFile('${webDirectory.path}/$initialPage');
+      print('加载备用资源失败: $e');
+    }
+  }
+  
+  // 使用多种方式尝试加载内容
+  Future<void> _loadContent() async {
+    try {
+      // 方法1: 尝试从assets读取HTML并直接加载字符串
+      try {
+        final htmlContent = await rootBundle.loadString('assets/web/index.html');
+        print('HTML字符串加载成功，长度: ${htmlContent.length}');
+        await controller.loadHtmlString(htmlContent, baseUrl: 'file://${webDirectory.path}/');
+        return;
+      } catch (e) {
+        print('HTML字符串加载失败: $e，尝试其他方法');
+      }
+      
+      // 方法2: 尝试加载本地文件
+      try {
+        final filePath = '${webDirectory.path}/$initialPage';
+        final file = File(filePath);
+        if (await file.exists()) {
+          print('加载本地文件: $filePath');
+          await controller.loadFile(filePath);
+          return;
+        } else {
+          print('本地文件不存在: $filePath');
+        }
+      } catch (e) {
+        print('加载本地文件失败: $e，尝试其他方法');
+      }
+      
+      // 方法3: 加载简单的静态HTML显示错误信息
+      print('尝试加载静态HTML内容');
+      final staticHtml = '''
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>声纹通</title>
+        <style>
+          body { font-family: 'Arial', sans-serif; text-align: center; padding: 20px; }
+          .container { max-width: 500px; margin: 0 auto; }
+          h1 { color: #0D47A1; }
+          .btn { background-color: #0D47A1; color: white; border: none; padding: 10px 20px; 
+                border-radius: 5px; font-size: 16px; cursor: pointer; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>声纹通</h1>
+          <p>欢迎使用声纹识别系统</p>
+          <button class="btn" onclick="location.reload()">刷新页面</button>
+        </div>
+      </body>
+      </html>
+      ''';
+      await controller.loadHtmlString(staticHtml);
+      
+    } catch (e) {
+      print('所有加载方法都失败: $e');
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
