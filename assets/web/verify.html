@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>声纹验证 - 智能车门解锁系统</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/verify.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="bi bi-soundwave"></i>
+                    <span>声纹通</span>
+                </div>
+                <button id="menuToggle" class="menu-toggle">
+                    <i class="bi bi-list"></i>
+                </button>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard.html"><i class="bi bi-speedometer2"></i> <span>仪表盘</span></a></li>
+                    <li class="active"><a href="verify.html"><i class="bi bi-shield-check"></i> <span>声纹验证</span></a></li>
+                    <li><a href="profile.html"><i class="bi bi-person-circle"></i> <span>个人资料</span></a></li>
+                    <li><a href="vehicles.html"><i class="bi bi-car-front"></i> <span>我的车辆</span></a></li>
+                    <li><a href="history.html"><i class="bi bi-clock-history"></i> <span>使用记录</span></a></li>
+                    <li><a href="settings.html"><i class="bi bi-gear"></i> <span>设置</span></a></li>
+                    <li><a href="help.html"><i class="bi bi-question-circle"></i> <span>帮助</span></a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="login.html" class="logout-btn"><i class="bi bi-box-arrow-left"></i> <span>退出登录</span></a>
+            </div>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <header class="content-header">
+                <h1>声纹验证 <span class="ai-badge">DeepSeek AI</span></h1>
+                <div class="user-menu">
+                    <div class="notifications">
+                        <i class="bi bi-bell"></i>
+                        <span class="badge">3</span>
+                    </div>
+                    <div class="user-info">
+                        <img src="img/avatar1.png" alt="用户头像" class="avatar">
+                        <span class="username">李明</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="verify-content">
+                <!-- 选项卡 -->
+                <div class="verify-tabs">
+                    <button class="verify-tab active" data-target="voiceprint-panel">声纹验证</button>
+                    <button class="verify-tab" data-target="command-panel">语音命令</button>
+                    <button class="verify-tab" data-target="door-panel">车门控制</button>
+                </div>
+
+                <!-- 面板区域 -->
+                <div class="verify-panels">
+                    <!-- 声纹验证面板 -->
+                    <div id="voiceprint-panel" class="verify-panel active">
+                        <div class="panel-header">
+                            <h3>声纹验证</h3>
+                            <p>使用您的声音验证身份，为您的车辆提供安全保障。</p>
+                        </div>
+
+                        <!-- 录制指示 -->
+                        <div class="record-instruction">
+                            <div class="instruction-icon">
+                                <i class="bi bi-mic"></i>
+                            </div>
+                            <div class="instruction-text">
+                                <p>请大声朗读以下文字完成声纹验证:</p>
+                                <div class="sample-text">智能声纹，安全出行</div>
+                            </div>
+                        </div>
+
+                        <!-- 音频可视化 -->
+                        <div class="audio-visualizer">
+                            <canvas id="visualizer"></canvas>
+                        </div>
+
+                        <!-- 控制面板 -->
+                        <div class="control-panel">
+                            <button id="startRecording" class="control-btn primary">
+                                <i class="bi bi-mic-fill btn-icon"></i> 开始录音
+                            </button>
+                            <button id="stopRecording" class="control-btn danger" disabled>
+                                <i class="bi bi-stop-fill btn-icon"></i> 停止录音
+                            </button>
+                            <button id="verifyVoiceprint" class="control-btn success" disabled>
+                                <i class="bi bi-shield-check btn-icon"></i> 验证身份
+                            </button>
+                        </div>
+
+                        <!-- 状态消息 -->
+                        <div id="status-message" class="status-message">
+                            请点击"开始录音"按钮进行声纹验证。
+                        </div>
+
+                        <!-- 结果消息，默认隐藏 -->
+                        <div id="result-message" class="result-message success" style="display: none;">
+                            身份验证成功! 您的声纹已确认。
+                        </div>
+
+                        <!-- 声纹质量报告 -->
+                        <div id="voiceprint-report" class="voiceprint-report" style="display: none;">
+                            <h3>声纹质量报告</h3>
+                            <div class="quality-metrics">
+                                <div class="metric">
+                                    <div class="metric-label">唯一性</div>
+                                    <div class="metric-bar">
+                                        <div class="metric-value" data-value="85%" style="width: 85%;"></div>
+                                    </div>
+                                    <div class="metric-number">85%</div>
+                                </div>
+                                <div class="metric">
+                                    <div class="metric-label">稳定性</div>
+                                    <div class="metric-bar">
+                                        <div class="metric-value" data-value="92%" style="width: 92%;"></div>
+                                    </div>
+                                    <div class="metric-number">92%</div>
+                                </div>
+                                <div class="metric">
+                                    <div class="metric-label">清晰度</div>
+                                    <div class="metric-bar">
+                                        <div class="metric-value" data-value="78%" style="width: 78%;"></div>
+                                    </div>
+                                    <div class="metric-number">78%</div>
+                                </div>
+                            </div>
+                            <div class="report-recommendations">
+                                <p>声音清晰，但环境噪音稍高，建议在更安静的环境下录制。</p>
+                                <p>声纹特征明显，匹配度高，识别成功率较高。</p>
+                            </div>
+                        </div>
+
+                        <!-- 信息提示框 -->
+                        <div class="info-box">
+                            <div class="info-icon">
+                                <i class="bi bi-info-circle"></i>
+                            </div>
+                            <p>使用DeepSeek AI技术，您的声纹将被安全加密存储。我们采用先进的活体检测技术，能够有效防止录音回放等欺骗行为。</p>
+                        </div>
+
+                        <!-- 验证细节 -->
+                        <div class="verify-details">
+                            <div class="verify-row">
+                                <!-- 语音命令结果 -->
+                                <div class="voice-command-result">
+                                    <h4>识别到的命令</h4>
+                                    <div class="command-box">
+                                        <div class="command-icon">
+                                            <i class="bi bi-chat-left-text"></i>
+                                        </div>
+                                        <div class="command-text" id="recognized-command">智能声纹，安全出行</div>
+                                        <div class="command-confidence" id="command-confidence">98%</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 安全检查 -->
+                                <div class="security-checks">
+                                    <h4>安全检查</h4>
+                                    <div class="security-check passed" id="liveness-check">
+                                        <div class="check-icon">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                        </div>
+                                        <div class="check-label">活体检测</div>
+                                        <div class="check-status">通过</div>
+                                    </div>
+                                    <div class="security-check passed" id="voiceprint-match">
+                                        <div class="check-icon">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                        </div>
+                                        <div class="check-label">声纹匹配</div>
+                                        <div class="check-status">通过</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 语音命令面板 -->
+                    <div id="command-panel" class="verify-panel">
+                        <div class="panel-header">
+                            <h3>语音命令</h3>
+                            <p>通过语音命令控制您的车辆，支持开/锁车门、打开后备箱等操作。</p>
+                        </div>
+
+                        <!-- 录制指示 -->
+                        <div class="record-instruction">
+                            <div class="instruction-icon">
+                                <i class="bi bi-mic"></i>
+                            </div>
+                            <div class="instruction-text">
+                                <p>请说出您想执行的命令:</p>
+                                <div class="sample-text">打开车门</div>
+                            </div>
+                        </div>
+
+                        <!-- 音频可视化 -->
+                        <div class="audio-visualizer">
+                            <canvas id="command-visualizer"></canvas>
+                        </div>
+
+                        <!-- 控制面板 -->
+                        <div class="control-panel">
+                            <button id="startCommandRecording" class="control-btn primary">
+                                <i class="bi bi-mic-fill btn-icon"></i> 开始录音
+                            </button>
+                            <button id="stopCommandRecording" class="control-btn danger" disabled>
+                                <i class="bi bi-stop-fill btn-icon"></i> 停止录音
+                            </button>
+                        </div>
+
+                        <!-- 状态消息 -->
+                        <div id="command-status-message" class="status-message">
+                            请点击"开始录音"按钮并说出您的命令。
+                        </div>
+
+                        <!-- 结果消息，默认隐藏 -->
+                        <div id="command-result-message" class="result-message success" style="display: none;">
+                            命令已识别，正在执行...
+                        </div>
+
+                        <!-- 信息提示框 -->
+                        <div class="info-box warning">
+                            <div class="info-icon">
+                                <i class="bi bi-exclamation-triangle"></i>
+                            </div>
+                            <p>语音命令功能需要先通过声纹验证才能执行敏感操作，如开锁车门。命令执行前会进行身份确认，确保您的车辆安全。</p>
+                        </div>
+
+                        <!-- 可用命令列表 -->
+                        <div class="available-commands">
+                            <h4>可用语音命令</h4>
+                            <div class="command-grid">
+                                <div class="command-item">
+                                    <span class="command-keyword">打开车门</span>
+                                    <span class="command-description">解锁并打开驾驶门</span>
+                                </div>
+                                <div class="command-item">
+                                    <span class="command-keyword">锁定车门</span>
+                                    <span class="command-description">锁定所有车门</span>
+                                </div>
+                                <div class="command-item">
+                                    <span class="command-keyword">打开后备箱</span>
+                                    <span class="command-description">解锁并打开后备箱</span>
+                                </div>
+                                <div class="command-item">
+                                    <span class="command-keyword">打开车窗</span>
+                                    <span class="command-description">降下所有车窗</span>
+                                </div>
+                                <div class="command-item">
+                                    <span class="command-keyword">关闭车窗</span>
+                                    <span class="command-description">升起所有车窗</span>
+                                </div>
+                                <div class="command-item">
+                                    <span class="command-keyword">启动发动机</span>
+                                    <span class="command-description">远程启动发动机</span>
+                                </div>
+                                <div class="command-item">
+                                    <span class="command-keyword">关闭发动机</span>
+                                    <span class="command-description">熄火</span>
+                                </div>
+                                <div class="command-item">
+                                    <span class="command-keyword">打开空调</span>
+                                    <span class="command-description">启动车内空调</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 车门控制面板 -->
+                    <div id="door-panel" class="verify-panel">
+                        <div class="panel-header">
+                            <h3>车门控制</h3>
+                            <p>查看您的车辆状态并控制车门锁定/解锁。</p>
+                        </div>
+
+                        <!-- 车辆选择器 -->
+                        <div class="vehicle-selector">
+                            <label for="vehicle-select">选择车辆:</label>
+                            <select id="vehicle-select">
+                                <option value="car1">奔驰 S级 - 京A12345</option>
+                                <option value="car2">宝马 5系 - 京B67890</option>
+                                <option value="car3">特斯拉 Model 3 - 京C54321</option>
+                            </select>
+                        </div>
+
+                        <!-- 车辆显示 -->
+                        <div class="vehicle-display">
+                            <div class="vehicle-image">
+                                <i class="bi bi-car-front car-icon"></i>
+                            </div>
+                            <div class="door-status-display">
+                                <div class="status-label">当前车门状态</div>
+                                <div class="door-status" id="door-status">已锁定</div>
+                                <div class="auto-lock-info" id="auto-lock-info" style="display: none;">
+                                    30秒后自动锁定
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 控制按钮 -->
+                        <div class="control-buttons">
+                            <button class="control-btn success door-btn" id="unlock-door">
+                                <i class="bi bi-unlock btn-icon"></i> 解锁车门
+                            </button>
+                            <button class="control-btn primary" id="trunk-btn">
+                                <i class="bi bi-box btn-icon"></i> 打开后备箱
+                            </button>
+                            <button class="control-btn secondary" id="window-btn">
+                                <i class="bi bi-window btn-icon"></i> 打开车窗
+                            </button>
+                            <button class="control-btn danger" id="lock-door" style="display: none;">
+                                <i class="bi bi-lock btn-icon"></i> 锁定车门
+                            </button>
+                        </div>
+
+                        <!-- 信息提示框 -->
+                        <div class="info-box">
+                            <div class="info-icon">
+                                <i class="bi bi-info-circle"></i>
+                            </div>
+                            <p>控制车门前需要先通过声纹验证确认您的身份。验证通过后，车门将保持解锁状态30秒，之后自动锁定以确保安全。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/voiceprint.js"></script>
+    <script src="js/deepseek-api.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/verify.js"></script>
+</body>
+</html> 

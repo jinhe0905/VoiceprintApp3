@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>仪表盘 - 智能车门解锁系统</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="bi bi-soundwave"></i>
+                    <span>声纹通</span>
+                </div>
+                <button id="menuToggle" class="menu-toggle">
+                    <i class="bi bi-list"></i>
+                </button>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active"><a href="dashboard.html"><i class="bi bi-speedometer2"></i> <span>仪表盘</span></a></li>
+                    <li><a href="verify.html"><i class="bi bi-shield-check"></i> <span>声纹验证</span></a></li>
+                    <li><a href="profile.html"><i class="bi bi-person-circle"></i> <span>个人资料</span></a></li>
+                    <li><a href="vehicles.html"><i class="bi bi-car-front"></i> <span>我的车辆</span></a></li>
+                    <li><a href="history.html"><i class="bi bi-clock-history"></i> <span>使用记录</span></a></li>
+                    <li><a href="settings.html"><i class="bi bi-gear"></i> <span>设置</span></a></li>
+                    <li><a href="help.html"><i class="bi bi-question-circle"></i> <span>帮助</span></a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="login.html" class="logout-btn"><i class="bi bi-box-arrow-left"></i> <span>退出登录</span></a>
+            </div>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <header class="content-header">
+                <h1>仪表盘 <span class="ai-badge">DeepSeek AI</span></h1>
+                <div class="user-menu">
+                    <div class="notifications">
+                        <i class="bi bi-bell"></i>
+                        <span class="badge">3</span>
+                    </div>
+                    <div class="user-info">
+                        <img src="img/avatar1.png" alt="用户头像" class="avatar">
+                        <span class="username">李明</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+                <!-- 欢迎消息 -->
+                <div class="welcome-message">
+                    <div class="welcome-text">
+                        <h2>欢迎回来，李明</h2>
+                        <p>您上次登录时间: 2025年2月15日 10:23</p>
+                    </div>
+                    <div class="welcome-action">
+                        <a href="verify.html" class="btn btn-primary">
+                            <i class="bi bi-shield-check"></i> 开始声纹验证
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 统计卡片 -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon">
+                                <i class="bi bi-shield-check"></i>
+                            </div>
+                            <div class="stat-title">成功验证次数</div>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-value dashboard-stat-value">26</div>
+                            <div class="stat-trend">
+                                <i class="bi bi-arrow-up stat-trend-icon"></i>
+                                <span class="percentage-badge">+12%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon">
+                                <i class="bi bi-car-front"></i>
+                            </div>
+                            <div class="stat-title">已绑定车辆</div>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-value dashboard-stat-value">3</div>
+                            <div class="stat-trend">
+                                <i class="bi bi-arrow-up stat-trend-icon"></i>
+                                <span class="percentage-badge">+1</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon">
+                                <i class="bi bi-headset"></i>
+                            </div>
+                            <div class="stat-title">语音识别率</div>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-value dashboard-stat-value">95%</div>
+                            <div class="stat-trend">
+                                <i class="bi bi-arrow-up stat-trend-icon"></i>
+                                <span class="percentage-badge">+5%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon">
+                                <i class="bi bi-lock"></i>
+                            </div>
+                            <div class="stat-title">安全警告</div>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-value dashboard-stat-value">0</div>
+                            <div class="stat-trend">
+                                <span>无变化</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 内容区域 -->
+                <div class="dashboard-grid">
+                    <!-- 最近活动 -->
+                    <div class="dashboard-card recent-activity">
+                        <div class="card-header">
+                            <h3 class="card-title">最近活动</h3>
+                            <a href="history.html" class="view-all">查看全部</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="activity-list">
+                                <div class="activity-item">
+                                    <div class="activity-icon success">
+                                        <i class="bi bi-unlock"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <div class="activity-title">车门解锁成功</div>
+                                        <div class="activity-meta">
+                                            <span class="activity-vehicle">奔驰 S级</span>
+                                            <span class="activity-time">今天 08:45</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon success">
+                                        <i class="bi bi-box"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <div class="activity-title">后备箱开启</div>
+                                        <div class="activity-meta">
+                                            <span class="activity-vehicle">奔驰 S级</span>
+                                            <span class="activity-time">今天 08:47</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon danger">
+                                        <i class="bi bi-x-circle"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <div class="activity-title">验证失败</div>
+                                        <div class="activity-meta">
+                                            <span class="activity-vehicle">宝马 5系</span>
+                                            <span class="activity-time">2025年2月14日 17:30</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon success">
+                                        <i class="bi bi-lock"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <div class="activity-title">车门锁定</div>
+                                        <div class="activity-meta">
+                                            <span class="activity-vehicle">奔驰 S级</span>
+                                            <span class="activity-time">2025年2月14日 12:15</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon info">
+                                        <i class="bi bi-person-check"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <div class="activity-title">声纹模板更新</div>
+                                        <div class="activity-meta">
+                                            <span class="activity-vehicle">系统</span>
+                                            <span class="activity-time">2025年2月12日</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 声纹质量 -->
+                    <div class="dashboard-card voice-quality">
+                        <div class="card-header">
+                            <h3 class="card-title">声纹质量</h3>
+                            <button class="btn btn-sm btn-ghost">更新</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="quality-radar">
+                                <div class="radar-chart">
+                                    <canvas id="radarChart" width="240" height="240"></canvas>
+                                </div>
+                                <div class="radar-legend">
+                                    <div class="legend-item">
+                                        <span class="legend-color uniqueness"></span>
+                                        <span class="legend-label">唯一性</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color stability"></span>
+                                        <span class="legend-label">稳定性</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color clarity"></span>
+                                        <span class="legend-label">清晰度</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color recognition"></span>
+                                        <span class="legend-label">识别率</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color security"></span>
+                                        <span class="legend-label">安全性</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="quality-summary">
+                                <div class="quality-score">
+                                    <div class="score-value">92</div>
+                                    <div class="score-label">总体评分</div>
+                                </div>
+                                <div class="quality-recommendation">
+                                    <h4>提升建议</h4>
+                                    <p>尝试在不同的环境下录制声纹模板，以提高识别率和适应性</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 车辆状态 -->
+                    <div class="dashboard-card vehicle-status">
+                        <div class="card-header">
+                            <h3 class="card-title">车辆状态</h3>
+                            <div class="card-filter">
+                                <select id="vehicleSelect" class="form-control">
+                                    <option value="car1">奔驰 S级</option>
+                                    <option value="car2">宝马 5系</option>
+                                    <option value="car3">特斯拉 Model 3</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="vehicle-display">
+                                <div class="vehicle-model">
+                                    <div class="vehicle-image">
+                                        <i class="bi bi-car-front"></i>
+                                    </div>
+                                    <div class="vehicle-info">
+                                        <div class="vehicle-name">奔驰 S级</div>
+                                        <div class="vehicle-plate">京A12345</div>
+                                    </div>
+                                </div>
+                                <div class="vehicle-indicators">
+                                    <div class="vehicle-indicator locked">
+                                        <i class="bi bi-lock"></i>
+                                        <span>已锁定</span>
+                                    </div>
+                                    <div class="vehicle-indicator engine-off">
+                                        <i class="bi bi-key"></i>
+                                        <span>发动机关闭</span>
+                                    </div>
+                                    <div class="vehicle-indicator windows-closed">
+                                        <i class="bi bi-window"></i>
+                                        <span>车窗关闭</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="vehicle-actions">
+                                <button class="btn btn-sm btn-primary">
+                                    <i class="bi bi-unlock"></i> 解锁车门
+                                </button>
+                                <button class="btn btn-sm btn-secondary">
+                                    <i class="bi bi-box"></i> 打开后备箱
+                                </button>
+                                <button class="btn btn-sm btn-ghost">
+                                    <i class="bi bi-gear"></i> 更多操作
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 用户偏好 -->
+                    <div class="dashboard-card user-preferences">
+                        <div class="card-header">
+                            <h3 class="card-title">快速设置</h3>
+                            <a href="settings.html" class="view-all">全部设置</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="preference-list">
+                                <div class="preference-item">
+                                    <div class="preference-info">
+                                        <div class="preference-title">自动锁定</div>
+                                        <div class="preference-description">离开车辆30秒后自动锁定</div>
+                                    </div>
+                                    <div class="preference-control">
+                                        <label class="switch">
+                                            <input type="checkbox" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="preference-item">
+                                    <div class="preference-info">
+                                        <div class="preference-title">声音反馈</div>
+                                        <div class="preference-description">操作成功时发出提示音</div>
+                                    </div>
+                                    <div class="preference-control">
+                                        <label class="switch">
+                                            <input type="checkbox" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="preference-item">
+                                    <div class="preference-info">
+                                        <div class="preference-title">活动通知</div>
+                                        <div class="preference-description">接收车辆状态变化通知</div>
+                                    </div>
+                                    <div class="preference-control">
+                                        <label class="switch">
+                                            <input type="checkbox">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="preference-item">
+                                    <div class="preference-info">
+                                        <div class="preference-title">增强安全</div>
+                                        <div class="preference-description">需要附加密码验证</div>
+                                    </div>
+                                    <div class="preference-control">
+                                        <label class="switch">
+                                            <input type="checkbox">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- DeepSeek AI 聊天助手 -->
+        <div class="ai-chat-container" id="aiChatContainer">
+            <div class="ai-chat-drawer">
+                <div class="ai-chat-header">
+                    <div class="ai-chat-title">
+                        <i class="bi bi-cpu"></i>
+                        <span>DeepSeek AI 助手</span>
+                    </div>
+                    <button class="ai-chat-close" id="aiChatClose">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+                <div class="ai-chat-body">
+                    <div class="ai-chat-messages" id="aiChatMessages">
+                        <div class="ai-message system">
+                            <div class="ai-message-content">
+                                <p>你好！我是DeepSeek AI助手，有什么可以帮到您的？</p>
+                                <p>您可以询问我关于声纹验证、车辆操作或系统功能的问题。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ai-chat-input">
+                        <input type="text" id="aiChatInput" placeholder="输入您的问题..." />
+                        <button id="aiChatSend">
+                            <i class="bi bi-send"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="ai-chat-trigger" id="aiChatTrigger">
+            <div class="deepseek-logo">
+                <span>D</span><span>e</span><span>e</span><span>p</span><span>S</span><span>e</span><span>e</span><span>k</span>
+            </div>
+        </button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/deepseek-api.js"></script>
+    
+    <!-- 初始化DeepSeek聊天 -->
+    <script>
+        // 确保页面完全加载后初始化
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('Dashboard页面加载完成，准备初始化DeepSeek聊天');
+            
+            // 获取所有需要的DOM元素
+            const chatContainer = document.getElementById('aiChatContainer');
+            const chatTrigger = document.getElementById('aiChatTrigger');
+            const chatClose = document.getElementById('aiChatClose');
+            const chatInput = document.getElementById('aiChatInput');
+            const chatSend = document.getElementById('aiChatSend');
+            const chatMessages = document.getElementById('aiChatMessages');
+            
+            console.log('聊天容器：', chatContainer);
+            console.log('聊天触发按钮：', chatTrigger);
+            
+            // 如果页面上没有这些元素，直接返回
+            if (!chatContainer || !chatTrigger) {
+                console.error('找不到聊天组件必要的DOM元素');
+                return;
+            }
+            
+            // 先确保聊天容器处于关闭状态
+            chatContainer.classList.remove('open');
+            
+            // 绑定点击事件 - 使用内联函数而不是引用之前声明的函数
+            chatTrigger.onclick = function() {
+                console.log('触发按钮被点击');
+                chatContainer.classList.add('open');
+                if (chatInput) chatInput.focus();
+            };
+            
+            // 关闭按钮事件
+            if (chatClose) {
+                chatClose.onclick = function() {
+                    console.log('关闭按钮被点击');
+                    chatContainer.classList.remove('open');
+                };
+            }
+            
+            // 发送消息处理函数
+            function sendMessage() {
+                if (!chatInput || !chatMessages) return;
+                
+                const message = chatInput.value.trim();
+                if (!message) return;
+                
+                // 添加用户消息到聊天区域
+                addMessage(message, 'user');
+                
+                // 清空输入框
+                chatInput.value = '';
+                
+                // 显示AI正在思考的指示
+                showThinking();
+                
+                // 模拟API调用延迟
+                setTimeout(() => {
+                    const response = getAIResponse(message);
+                    
+                    // 移除思考指示
+                    removeThinking();
+                    
+                    // 添加AI回复
+                    addMessage(response, 'system');
+                    
+                    // 滚动到底部
+                    scrollToBottom();
+                }, 1000);
+            }
+            
+            // 绑定发送按钮点击事件
+            if (chatSend) {
+                chatSend.onclick = sendMessage;
+            }
+            
+            // 绑定输入框回车事件
+            if (chatInput) {
+                chatInput.onkeypress = function(e) {
+                    if (e.key === 'Enter') {
+                        sendMessage();
+                    }
+                };
+            }
+            
+            // 绑定快速提问标签
+            const suggestionTags = document.querySelectorAll('.suggestion-tag');
+            if (suggestionTags.length > 0) {
+                suggestionTags.forEach(tag => {
+                    tag.onclick = function() {
+                        if (!chatInput) return;
+                        
+                        const text = this.getAttribute('data-text');
+                        if (text) {
+                            chatInput.value = text;
+                            sendMessage();
+                        }
+                    };
+                });
+            }
+            
+            // 添加消息到聊天区域
+            function addMessage(text, sender) {
+                if (!chatMessages) return;
+                
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `ai-message ${sender}`;
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'ai-message-content';
+                
+                // 将文本转换为段落
+                const paragraphs = text.split('\n').filter(p => p.trim() !== '');
+                paragraphs.forEach(paragraph => {
+                    const p = document.createElement('p');
+                    p.textContent = paragraph;
+                    contentDiv.appendChild(p);
+                });
+                
+                messageDiv.appendChild(contentDiv);
+                chatMessages.appendChild(messageDiv);
+                
+                scrollToBottom();
+            }
+            
+            // 显示AI正在思考的指示
+            function showThinking() {
+                if (!chatMessages) return;
+                
+                const thinkingDiv = document.createElement('div');
+                thinkingDiv.className = 'ai-message system thinking';
+                thinkingDiv.innerHTML = `
+                    <div class="ai-message-content">
+                        <div class="thinking-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                `;
+                chatMessages.appendChild(thinkingDiv);
+                scrollToBottom();
+            }
+            
+            // 移除思考指示
+            function removeThinking() {
+                if (!chatMessages) return;
+                
+                const thinking = chatMessages.querySelector('.thinking');
+                if (thinking) {
+                    thinking.remove();
+                }
+            }
+            
+            // 滚动到底部
+            function scrollToBottom() {
+                if (!chatMessages) return;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // 模拟AI响应
+            function getAIResponse(message) {
+                // 简单的关键词匹配响应
+                const lowerMessage = message.toLowerCase();
+                
+                if (lowerMessage.includes('声纹识别率') || lowerMessage.includes('提高识别')) {
+                    return "提高声纹识别率的几个建议：\n\n1. 在安静的环境下录制声纹模板\n2. 使用相同的设备和距离录制声纹\n3. 保持语音清晰，避免过快或过慢\n4. 录制多个声纹样本增加识别准确性\n5. 定期更新声纹模板以适应声音变化";
+                }
+                
+                if (lowerMessage.includes('安全性') || lowerMessage.includes('防欺骗')) {
+                    return "声纹验证系统采用了多层安全保障：\n\n1. DeepSeek AI活体检测技术能识别录音回放\n2. 99.9%的声纹匹配准确率大幅降低误识别风险\n3. 可选的多因素认证（声纹+密码）\n4. 异常登录检测和警报系统\n5. 所有声纹数据都经过加密存储";
+                }
+                
+                if (lowerMessage.includes('添加') && lowerMessage.includes('车辆')) {
+                    return "添加新车辆的步骤：\n\n1. 在主菜单中点击"我的车辆"\n2. 点击"+"按钮添加新车辆\n3. 输入车辆信息（品牌、型号、车牌号等）\n4. 扫描车辆的智能接入设备配对码\n5. 设置车辆权限和操作选项\n6. 完成配对后，进行声纹验证测试";
+                }
+                
+                if (lowerMessage.includes('功能') || lowerMessage.includes('什么')) {
+                    return "声纹通系统主要功能包括：\n\n1. 声纹识别解锁车门\n2. 支持多种语音指令控制车辆\n3. 多用户与权限管理\n4. 安全日志和使用记录\n5. 活体检测防欺骗\n6. 车辆状态远程查看\n7. 个性化设置与偏好";
+                }
+                
+                if (lowerMessage.includes('语音指令') || lowerMessage.includes('命令')) {
+                    return "系统支持的语音指令包括：\n\n• "打开车门" - 解锁车门\n• "关闭车门" - 锁定车门\n• "打开后备箱" - 打开后备箱\n• "启动发动机" - 远程启动发动机\n• "关闭发动机" - 关闭发动机\n• "打开车窗" - 打开车窗\n• "关闭车窗" - 关闭车窗\n• "打开空调" - 开启空调系统";
+                }
+                
+                // 默认回复
+                return "感谢您的提问。我是您的DeepSeek AI助手，可以回答关于声纹验证系统的各种问题。您可以询问关于系统功能、声纹技术、安全性或使用方法等方面的问题。";
+            }
+        });
+    </script>
+</body>
+</html> 
